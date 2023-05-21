@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Prediction Game</title>
+  <style>
+    body{
+         font-family: "Ink Free", cursive;
+         font-weight: bold;
+         background-color: antiquewhite;
+    }
+    #color-box {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      margin-left: 70px ;
+      display: none;
+      border: 2px solid black;
+      
+    }
+    #result {
+        display: none;
+        width: 70%;
+        margin: 10px auto;
+        border-radius: 20px;
+        padding: 3px;
+    }
+    button {
+        width: 100px;
+        height: 50px;
+        font-size: 16px;
+        margin: 5px;
+       font-weight: bold;
+       font-family: "Ink Free",cursive;
+    }
+    button::after{
+        transform: translateY(-3px);
+        box-shadow: 2px 2px 3px gray;
+    }
+    button:focus{
+      outline: #fff;
+      border: 2px solid #fff;
+    }
+    h1{
+        color: blueviolet;
+        text-shadow: 3px 3px 4px grey;
+    }
+    #play-again{
+        margin-left:5px;
+        box-shadow: 3px 3px 4px darkblue;
+        color:crimson;
+    }
+    #text1{
+        background-color: black;
+        border-radius: 10px;
+        padding: 5px;
+        margin: 10px auto;
+        box-shadow: 2px 2px 3px black;
+        width: 70%;
+        color:#fff;
+    }
+    /* /* #result{
+        transform: translateX(-20px); 
+    } */
+    #main{
+        border: 3px solid black;
+        width: 350px;
+        text-align: center;
+        background-color: lightgray;
+        padding: 10px;
+        margin: 0px auto;
+    }
+    #footer{
+        font-weight: bold;
+        margin: 10px -10px 0px -10px ;
+        z-index: 1;
+        animation: scroll 10s linear infinite;
+    }
+    @keyframes scroll {
+  0% {
+    transform: translateX(-30%);
+  }
+  50% {
+    transform: translateX(30%);
+  }
+  100% {
+    transform: translateX(-30%);
+  }
+}
+#time-left{
+  background-color: blueviolet;
+  border-radius: 20px;
+  padding: 5px;
+  width: 40%;
+  margin: 10px auto;
+  color:#fff;
+}
+#inst{
+  font-size:0.6em;
+}
+
+  </style>
+</head>
+<body>
+<div id="main">
+  <h1>Color Prediction Game</h1>
+  <p id="text1">Predict the color of the box:</p>
+  <button id="red" onclick="checkColor('red')"  style="background-color: red; color: white;">Red</button>
+  <button id="yellow" onclick="checkColor('yellow')"  style="background-color: yellow; color: black;">Yellow</button>
+  <button id="blue" onclick="checkColor('blue')" style="background-color: blue; color: white;">Blue</button>
+  <p id="result"></p>
+  <div id="color-box"></div>
+  <p id="time-left"></p>
+  <button onclick="playAgain()" id="play-again" disabled>Play Again</button>
+
+  <script>
+    function checkColor(selectedColor) {
+      var colorBox = document.getElementById("color-box");
+      var result = document.getElementById("result");
+      var timeLeft = document.getElementById("time-left");
+      var playAgainButton = document.getElementById("play-again");
+      var boxColor = colorBox.style.backgroundColor.toLowerCase();
+    //   var select="black"
+    //   if(selectedColor=="red"){
+    //     red.style.backgroundColor =select;
+    //   }
+      if (selectedColor === boxColor) {
+        // result.textContent = "Correct! You predicted the color.";
+        result.innerHTML="Correct! You predicted the color.";
+        result.style.backgroundColor = "green";
+        result.style.color ="#fff"
+      } else {
+        result.textContent ="Incorrect! Try again.";
+        result.style.backgroundColor = "red";
+        result.style.color ="#fff"
+      }
+
+      playAgainButton.disabled = false;
+    }
+
+    function getRandomColor() {
+      var colors = ["red", "blue", "yellow"];
+      var randomIndex = Math.floor(Math.random() * colors.length);
+      return colors[randomIndex];
+    }
+
+    // Generate a random color for the color box and update the display
+    var colorBox = document.getElementById("color-box");
+    var randomColor = getRandomColor();
+    colorBox.style.backgroundColor = randomColor;
+
+    function revealColor() {
+      colorBox.style.display = "block";
+      result.style.display = "block";
+      enableColorButtons();
+      enablePlayAgainButton();
+    }
+
+    // Call the revealColor function after a delay of 2 seconds (2000 milliseconds)
+    var delaySeconds = 10;
+    var timeLeft = delaySeconds;
+    var timeLeftElement = document.getElementById("time-left");
+    timeLeftElement.textContent = "Time left: " + timeLeft + " seconds";
+
+    var countdownInterval = setInterval(function() {
+        // red.style.backgroundColor = "red";
+      timeLeft--;
+      timeLeftElement.textContent = "Time left: " + timeLeft + " seconds";
+    
+      if (timeLeft === 0) {
+        clearInterval(countdownInterval);
+        revealColor();
+      }
+    }, 1000);
+
+    function enableColorButtons() {
+      var colorButtons = document.querySelectorAll("button");
+      colorButtons.forEach(function(button) {
+        button.disabled = true;
+      });
+    }
+
+    function enablePlayAgainButton() {
+      var playAgainButton = document.getElementById("play-again");
+      playAgainButton.disabled = false;
+    }
+
+    function playAgain() {
+      var colorButtons = document.querySelectorAll("button");
+      colorButtons.forEach(function(button) {
+        button.disabled = false;
+        var randomColor = getRandomColor();
+    colorBox.style.backgroundColor = randomColor;
+  
+
+      });
+
+      colorBox.style.display = "none";
+      result.style.display = "none";
+      timeLeft = delaySeconds;
+      timeLeftElement.textContent = "Time left: " + timeLeft + " seconds";
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(function() {
+        timeLeft--;
+        timeLeftElement.textContent = "Time left: " + timeLeft + " seconds";
+        if (timeLeft === 0) {
+          clearInterval(countdownInterval);
+          revealColor();
+        }
+      }, 1000);
+    }
+  </script>
+  <div id="inst"><p>1. Select one color from three given colors before the timer ends.</p>
+  <p>2. Wait until the Timer ends,the result well be dispalyed.</p>
+<p>3. If you want to play again click on play again button </p></div>
+<hr>
+  <p id="footer">By Sushrut Mhetras</p>
+  </div>
+</body>
+</html>
